@@ -5,15 +5,15 @@ public class TestMainDay7 {
 
 	public static void main(String[] args) {
 		String intCodeInput = "3,8,1001,8,10,8,105,1,0,0,21,42,67,88,105,114,195,276,357,438,99999,3,9,101,4,9,9,102,3,9,9,1001,9,2,9,102,4,9,9,4,9,99,3,9,1001,9,4,9,102,4,9,9,101,2,9,9,1002,9,5,9,1001,9,2,9,4,9,99,3,9,1001,9,4,9,1002,9,4,9,101,2,9,9,1002,9,2,9,4,9,99,3,9,101,4,9,9,102,3,9,9,1001,9,5,9,4,9,99,3,9,102,5,9,9,4,9,99,3,9,102,2,9,9,4,9,3,9,101,1,9,9,4,9,3,9,101,2,9,9,4,9,3,9,1001,9,2,9,4,9,3,9,102,2,9,9,4,9,3,9,1002,9,2,9,4,9,3,9,1001,9,1,9,4,9,3,9,102,2,9,9,4,9,3,9,102,2,9,9,4,9,3,9,101,2,9,9,4,9,99,3,9,1002,9,2,9,4,9,3,9,1001,9,2,9,4,9,3,9,102,2,9,9,4,9,3,9,102,2,9,9,4,9,3,9,102,2,9,9,4,9,3,9,102,2,9,9,4,9,3,9,1001,9,1,9,4,9,3,9,101,1,9,9,4,9,3,9,101,1,9,9,4,9,3,9,1002,9,2,9,4,9,99,3,9,102,2,9,9,4,9,3,9,101,1,9,9,4,9,3,9,1002,9,2,9,4,9,3,9,1002,9,2,9,4,9,3,9,1002,9,2,9,4,9,3,9,102,2,9,9,4,9,3,9,101,2,9,9,4,9,3,9,102,2,9,9,4,9,3,9,1001,9,2,9,4,9,3,9,1001,9,1,9,4,9,99,3,9,1002,9,2,9,4,9,3,9,1001,9,1,9,4,9,3,9,101,2,9,9,4,9,3,9,1001,9,1,9,4,9,3,9,101,2,9,9,4,9,3,9,1001,9,1,9,4,9,3,9,102,2,9,9,4,9,3,9,1002,9,2,9,4,9,3,9,1002,9,2,9,4,9,3,9,1001,9,2,9,4,9,99,3,9,1002,9,2,9,4,9,3,9,101,1,9,9,4,9,3,9,1002,9,2,9,4,9,3,9,102,2,9,9,4,9,3,9,1001,9,1,9,4,9,3,9,1002,9,2,9,4,9,3,9,1001,9,1,9,4,9,3,9,101,2,9,9,4,9,3,9,1001,9,1,9,4,9,3,9,1002,9,2,9,4,9,99";
-		String sampleCodeInput = "3,31,3,32,1002,32,10,32,1001,31,-2,31,1007,31,0,33,1002,33,7,33,1,33,31,31,1,32,31,31,4,31,99,0,0,0";
+		String sampleCodeInput = "3,26,1001,26,-4,26,3,27,1002,27,2,27,1,27,26,27,4,27,1001,28,-1,28,1005,28,6,99,0,0,5";
 		String[] array = sampleCodeInput.split(",");
 
 		List<String> phases = new ArrayList<>();
-		phases.add("0");
-		phases.add("1");
-		phases.add("2");
-		phases.add("3");
-		phases.add("4");
+		phases.add("5");
+		phases.add("6");
+		phases.add("7");
+		phases.add("8");
+		phases.add("9");
 
 		List<List<String>> allList = generateAllSequence(phases);
 
@@ -23,13 +23,27 @@ public class TestMainDay7 {
 		int maxTS = Integer.MIN_VALUE;
 		List<String> seqMax = null;
 		for (List<String> seq : allList) {
-			Result res = new Result(0, false);
-			Result resA = runIntCodeProgram(array.clone(), seq.get(0), Integer.toString(res.res));
-			Result resB = runIntCodeProgram(array.clone(), seq.get(1), Integer.toString(resA.res));
-			Result resC = runIntCodeProgram(array.clone(), seq.get(2), Integer.toString(resB.res));
-			Result resD = runIntCodeProgram(array.clone(), seq.get(3), Integer.toString(resC.res));
-			res = runIntCodeProgram(array.clone(), seq.get(4), Integer.toString(resD.res));
+			Result res = new Result(0, false, 0);
+			String[] arrayA = array.clone();
+			String[] arrayB = array.clone();
+			String[] arrayC = array.clone();
+			String[] arrayD = array.clone();
+			String[] arrayE = array.clone();
+			boolean first = true;
+			try {
+				while (1 == 1) {
+					Result resA = runIntCodeProgram(arrayA, seq.get(0), Integer.toString(res.res), first);
+					Result resB = runIntCodeProgram(arrayB, seq.get(1), Integer.toString(resA.res), first);
+					Result resC = runIntCodeProgram(arrayC, seq.get(2), Integer.toString(resB.res), first);
+					Result resD = runIntCodeProgram(arrayD, seq.get(3), Integer.toString(resC.res), first);
+					res = runIntCodeProgram(arrayE, seq.get(4), Integer.toString(resD.res), first);
+					first = false;
+				}
+			} catch (IllegalArgumentException e) {
 
+			}
+
+			System.out.println("Complete Seq: " + res.res);
 			if (res.res > maxTS) {
 				maxTS = res.res;
 				seqMax = seq;
@@ -62,7 +76,7 @@ public class TestMainDay7 {
 		return res;
 	}
 
-	private static Result runIntCodeProgram(String[] array, String phase, String input) {
+	private static Result runIntCodeProgram(String[] array, String phase, String input, boolean usePhase) {
 		int idxNextElement = 0;
 		int nextElem = Integer.parseInt(array[idxNextElement]);
 		int mode3 = nextElem / 10000;
@@ -95,14 +109,14 @@ public class TestMainDay7 {
 				break;
 			case 3:
 				el1 = Integer.parseInt(array[idxNextElement + 1]);
-				array[el1] = (numInputInstr == 0) ? phase : input;
+				array[el1] = (numInputInstr == 0 && usePhase) ? phase : input;
 				numInputInstr++;
 				idxNextElement += 2;
 				break;
 			case 4:
 				el1 = retrieveValue(array, idxNextElement + 1, mode1);
 
-				return new Result(el1, false);
+				return new Result(el1, false, idxNextElement + 2);
 			case 5:
 				el1 = retrieveValue(array, idxNextElement + 1, mode1);
 				el2 = retrieveValue(array, idxNextElement + 2, mode2);
@@ -184,9 +198,11 @@ public class TestMainDay7 {
 class Result {
 	int res;
 	boolean isStop;
+	int idNextInstr;
 
-	public Result(int res, boolean isStop) {
+	public Result(int res, boolean isStop, int idNextInstr) {
 		this.res = res;
 		this.isStop = isStop;
+		this.idNextInstr = idNextInstr;
 	}
 }
