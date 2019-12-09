@@ -1,10 +1,10 @@
 
-public class Amplifier {
+public class Amplifier_Day7 {
 
 	private int idxNextElement;
 	private String[] array;
 
-	public Amplifier(int idxNextElement, String[] array) {
+	public Amplifier_Day7(int idxNextElement, String[] array) {
 		this.idxNextElement = idxNextElement;
 		this.array = array;
 	}
