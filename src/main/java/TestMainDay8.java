@@ -37,6 +37,33 @@ public class TestMainDay8 {
 		System.out.println("Count 1 in fewZeroLayer: " + countSamePixel(fewZeroLayer, 1));
 		System.out.println("Count 2 in fewZeroLayer: " + countSamePixel(fewZeroLayer, 2));
 
+		Layer decodeImage = decode(image, wide, tall);
+
+		System.out.println(decodeImage);
+	}
+
+	private static Layer decode(List<Layer> image, int wide, int tall) {
+		Layer result = new Layer();
+		for (int i = 0; i < tall; i++) {
+			List<Integer> row = new ArrayList<>();
+			for (int j = 0; j < wide; j++) {
+				int v = calculatePixel(j, i, image);
+				row.add(v);
+			}
+			result.addRow(row);
+		}
+		return result;
+	}
+
+	private static int calculatePixel(int x, int y, List<Layer> image) {
+		for (Layer layer : image) {
+			Integer pixel = layer.rows.get(y).get(x);
+			if (pixel == 2)
+				continue;
+			return pixel;
+		}
+
+		return 2;
 	}
 
 	private static Layer findFewZeroLayer(List<Layer> image) {
@@ -80,7 +107,7 @@ class Layer {
 		StringBuilder sb = new StringBuilder();
 		sb.append("Layer<\n");
 		for (List<Integer> list : rows) {
-			sb.append(list.toString());
+			sb.append(list.toString().replace(",", "").replace("[", "").replace("]", ""));
 			sb.append("\n");
 		}
 		sb.append(">");
