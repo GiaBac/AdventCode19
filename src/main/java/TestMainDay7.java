@@ -24,11 +24,11 @@ public class TestMainDay7 {
 		List<String> seqMax = null;
 		for (List<String> seq : allList) {
 			Result res = new Result(0, false, 0);
-			Amplifier_Day7 aA = new Amplifier_Day7(0, array.clone());
-			Amplifier_Day7 aB = new Amplifier_Day7(0, array.clone());
-			Amplifier_Day7 aC = new Amplifier_Day7(0, array.clone());
-			Amplifier_Day7 aD = new Amplifier_Day7(0, array.clone());
-			Amplifier_Day7 aE = new Amplifier_Day7(0, array.clone());
+			Amplifier_Day7 aA = new Amplifier_Day7(array.clone());
+			Amplifier_Day7 aB = new Amplifier_Day7(array.clone());
+			Amplifier_Day7 aC = new Amplifier_Day7(array.clone());
+			Amplifier_Day7 aD = new Amplifier_Day7(array.clone());
+			Amplifier_Day7 aE = new Amplifier_Day7(array.clone());
 			boolean first = true;
 			try {
 				while (1 == 1) {

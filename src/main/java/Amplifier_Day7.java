@@ -4,8 +4,8 @@ public class Amplifier_Day7 {
 	private int idxNextElement;
 	private String[] array;
 
-	public Amplifier_Day7(int idxNextElement, String[] array) {
-		this.idxNextElement = idxNextElement;
+	public Amplifier_Day7(String[] array) {
+		this.idxNextElement = 0;
 		this.array = array;
 	}
 
