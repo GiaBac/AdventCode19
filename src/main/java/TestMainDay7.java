@@ -5,8 +5,8 @@ public class TestMainDay7 {
 
 	public static void main(String[] args) {
 		String intCodeInput = "3,8,1001,8,10,8,105,1,0,0,21,42,67,88,105,114,195,276,357,438,99999,3,9,101,4,9,9,102,3,9,9,1001,9,2,9,102,4,9,9,4,9,99,3,9,1001,9,4,9,102,4,9,9,101,2,9,9,1002,9,5,9,1001,9,2,9,4,9,99,3,9,1001,9,4,9,1002,9,4,9,101,2,9,9,1002,9,2,9,4,9,99,3,9,101,4,9,9,102,3,9,9,1001,9,5,9,4,9,99,3,9,102,5,9,9,4,9,99,3,9,102,2,9,9,4,9,3,9,101,1,9,9,4,9,3,9,101,2,9,9,4,9,3,9,1001,9,2,9,4,9,3,9,102,2,9,9,4,9,3,9,1002,9,2,9,4,9,3,9,1001,9,1,9,4,9,3,9,102,2,9,9,4,9,3,9,102,2,9,9,4,9,3,9,101,2,9,9,4,9,99,3,9,1002,9,2,9,4,9,3,9,1001,9,2,9,4,9,3,9,102,2,9,9,4,9,3,9,102,2,9,9,4,9,3,9,102,2,9,9,4,9,3,9,102,2,9,9,4,9,3,9,1001,9,1,9,4,9,3,9,101,1,9,9,4,9,3,9,101,1,9,9,4,9,3,9,1002,9,2,9,4,9,99,3,9,102,2,9,9,4,9,3,9,101,1,9,9,4,9,3,9,1002,9,2,9,4,9,3,9,1002,9,2,9,4,9,3,9,1002,9,2,9,4,9,3,9,102,2,9,9,4,9,3,9,101,2,9,9,4,9,3,9,102,2,9,9,4,9,3,9,1001,9,2,9,4,9,3,9,1001,9,1,9,4,9,99,3,9,1002,9,2,9,4,9,3,9,1001,9,1,9,4,9,3,9,101,2,9,9,4,9,3,9,1001,9,1,9,4,9,3,9,101,2,9,9,4,9,3,9,1001,9,1,9,4,9,3,9,102,2,9,9,4,9,3,9,1002,9,2,9,4,9,3,9,1002,9,2,9,4,9,3,9,1001,9,2,9,4,9,99,3,9,1002,9,2,9,4,9,3,9,101,1,9,9,4,9,3,9,1002,9,2,9,4,9,3,9,102,2,9,9,4,9,3,9,1001,9,1,9,4,9,3,9,1002,9,2,9,4,9,3,9,1001,9,1,9,4,9,3,9,101,2,9,9,4,9,3,9,1001,9,1,9,4,9,3,9,1002,9,2,9,4,9,99";
-		String sampleCodeInput = "3,26,1001,26,-4,26,3,27,1002,27,2,27,1,27,26,27,4,27,1001,28,-1,28,1005,28,6,99,0,0,5";
-		String[] array = sampleCodeInput.split(",");
+		String sampleCodeInput = "3,52,1001,52,-5,52,3,53,1,52,56,54,1007,54,5,55,1005,55,26,1001,54,-5,54,1105,1,12,1,53,54,53,1008,54,0,55,1001,55,1,55,2,53,55,53,4,53,1001,56,-1,56,1005,56,6,99,0,0,0,0,10";
+		String[] array = intCodeInput.split(",");
 
 		List<String> phases = new ArrayList<>();
 		phases.add("5");
@@ -24,19 +24,19 @@ public class TestMainDay7 {
 		List<String> seqMax = null;
 		for (List<String> seq : allList) {
 			Result res = new Result(0, false, 0);
-			String[] arrayA = array.clone();
-			String[] arrayB = array.clone();
-			String[] arrayC = array.clone();
-			String[] arrayD = array.clone();
-			String[] arrayE = array.clone();
+			Amplifier aA = new Amplifier(0, array.clone());
+			Amplifier aB = new Amplifier(0, array.clone());
+			Amplifier aC = new Amplifier(0, array.clone());
+			Amplifier aD = new Amplifier(0, array.clone());
+			Amplifier aE = new Amplifier(0, array.clone());
 			boolean first = true;
 			try {
 				while (1 == 1) {
-					Result resA = runIntCodeProgram(arrayA, seq.get(0), Integer.toString(res.res), first);
-					Result resB = runIntCodeProgram(arrayB, seq.get(1), Integer.toString(resA.res), first);
-					Result resC = runIntCodeProgram(arrayC, seq.get(2), Integer.toString(resB.res), first);
-					Result resD = runIntCodeProgram(arrayD, seq.get(3), Integer.toString(resC.res), first);
-					res = runIntCodeProgram(arrayE, seq.get(4), Integer.toString(resD.res), first);
+					Result resA = aA.runIntCodeProgram(seq.get(0), Integer.toString(res.res), first);
+					Result resB = aB.runIntCodeProgram(seq.get(1), Integer.toString(resA.res), first);
+					Result resC = aC.runIntCodeProgram(seq.get(2), Integer.toString(resB.res), first);
+					Result resD = aD.runIntCodeProgram(seq.get(3), Integer.toString(resC.res), first);
+					res = aE.runIntCodeProgram(seq.get(4), Integer.toString(resD.res), first);
 					first = false;
 				}
 			} catch (IllegalArgumentException e) {
@@ -74,124 +74,6 @@ public class TestMainDay7 {
 		}
 
 		return res;
-	}
-
-	private static Result runIntCodeProgram(String[] array, String phase, String input, boolean usePhase) {
-		int idxNextElement = 0;
-		int nextElem = Integer.parseInt(array[idxNextElement]);
-		int mode3 = nextElem / 10000;
-		int mode2 = (nextElem - (mode3 * 10000)) / 1000;
-		int mode1 = (nextElem - (mode3 * 10000) - (mode2 * 1000)) / 100;
-		int op = (nextElem - (mode3 * 10000) - (mode2 * 1000) - (mode1 * 100));
-
-		int numInputInstr = 0;
-		int count = 1;
-
-		while (nextElem != 99) {
-			switch (op) {
-			case 99:
-				throw new IllegalArgumentException("HALT");
-			case 1:
-				int el1 = retrieveValue(array, idxNextElement + 1, mode1);
-				int el2 = retrieveValue(array, idxNextElement + 2, mode2);
-				int el3 = Integer.parseInt(array[idxNextElement + 3]);
-				Integer sum = el1 + el2;
-				array[el3] = sum.toString();
-				idxNextElement += 4;
-				break;
-			case 2:
-				el1 = retrieveValue(array, idxNextElement + 1, mode1);
-				el2 = retrieveValue(array, idxNextElement + 2, mode2);
-				el3 = Integer.parseInt(array[idxNextElement + 3]);
-				Integer mul = el1 * el2;
-				array[el3] = mul.toString();
-				idxNextElement += 4;
-				break;
-			case 3:
-				el1 = Integer.parseInt(array[idxNextElement + 1]);
-				array[el1] = (numInputInstr == 0 && usePhase) ? phase : input;
-				numInputInstr++;
-				idxNextElement += 2;
-				break;
-			case 4:
-				el1 = retrieveValue(array, idxNextElement + 1, mode1);
-
-				return new Result(el1, false, idxNextElement + 2);
-			case 5:
-				el1 = retrieveValue(array, idxNextElement + 1, mode1);
-				el2 = retrieveValue(array, idxNextElement + 2, mode2);
-				if (el1 != 0) {
-					idxNextElement = el2;
-				} else {
-					idxNextElement += 3;
-				}
-				break;
-			case 6:
-				el1 = retrieveValue(array, idxNextElement + 1, mode1);
-				el2 = retrieveValue(array, idxNextElement + 2, mode2);
-				if (el1 == 0) {
-					idxNextElement = el2;
-				} else {
-					idxNextElement += 3;
-				}
-				break;
-			case 7:
-				el1 = retrieveValue(array, idxNextElement + 1, mode1);
-				el2 = retrieveValue(array, idxNextElement + 2, mode2);
-				el3 = Integer.parseInt(array[idxNextElement + 3]);
-				if (el1 < el2) {
-					array[el3] = "1";
-				} else {
-					array[el3] = "0";
-				}
-				idxNextElement += 4;
-				break;
-			case 8:
-				el1 = retrieveValue(array, idxNextElement + 1, mode1);
-				el2 = retrieveValue(array, idxNextElement + 2, mode2);
-				el3 = Integer.parseInt(array[idxNextElement + 3]);
-				if (el1 == el2) {
-					array[el3] = "1";
-				} else {
-					array[el3] = "0";
-				}
-				idxNextElement += 4;
-				break;
-			default:
-				failure(array, idxNextElement, nextElem, count, "Something went wrong!");
-			}
-			count++;
-
-			nextElem = Integer.parseInt(array[idxNextElement]);
-			mode3 = nextElem / 10000;
-			mode2 = (nextElem - (mode3 * 10000)) / 1000;
-			mode1 = (nextElem - (mode3 * 10000) - (mode2 * 1000)) / 100;
-			op = (nextElem - (mode3 * 10000) - (mode2 * 1000) - (mode1 * 100));
-		}
-
-		System.out.println("nextElem= " + nextElem);
-		System.out.println("idxNextElement= " + idxNextElement);
-		System.out.println("#iter= " + count);
-		System.out.print("Array[idxNextElement]= " + array[idxNextElement]);
-
-		throw new IllegalArgumentException();
-	}
-
-	private static void failure(String[] array, int idxNextElement, int nextElem, int count, String msg) {
-		System.out.println(msg);
-		System.out.println("A[idxNextElement+2]= " + array[idxNextElement + 2]);
-		System.out.println("nextElem= " + nextElem);
-		System.out.println("idxNextElement= " + idxNextElement);
-		System.out.println("#iter= " + count);
-		System.exit(-1);
-	}
-
-	private static int retrieveValue(String[] array, int idx, int mode) {
-		assert (mode == 0 || mode == 1);
-
-		int val = Integer.parseInt(array[idx]);
-
-		return (mode == 1) ? val : Integer.parseInt(array[val]);
 	}
 }
 
