@@ -12,7 +12,7 @@ public class TestMainDay8 {
 		NumberFormat formatter = new DecimalFormat("#0.00");
 
 		while (1 == 1) {
-			Result8 res = pc.runIntCodeProgram("NA", "1", false);
+			Result8 res = pc.runIntCodeProgram("NA", "2", false);
 			System.out.println("RES= " + formatter.format(res.res));
 		}
 	}
