@@ -34,56 +34,98 @@ public class TestMainDay10 {
 		// Same Row-Left
 		for (int x = colFrom - 1; x >= 0; x--) {
 			if (clone[rowFrom][x] == '#') {
-				cleanAllStuffDueAPoint(rowFrom, colFrom, clone, rowFrom, x);
+				markBlockedByAPoint(rowFrom, colFrom, clone, rowFrom, x);
 			}
 		}
 
 		// Same Row-Right
-		for (int x = colFrom + 1; x < clone.length; x++) {
+		for (int x = colFrom + 1; x < clone[0].length; x++) {
 			if (clone[rowFrom][x] == '#') {
-				cleanAllStuffDueAPoint(rowFrom, colFrom, clone, rowFrom, x);
+				markBlockedByAPoint(rowFrom, colFrom, clone, rowFrom, x);
 			}
 		}
 
+		// Same Col-Up
+		for (int y = rowFrom - 1; y >= 0; y--) {
+			if (clone[y][colFrom] == '#') {
+				markBlockedByAPoint(rowFrom, colFrom, clone, y, colFrom);
+			}
+		}
+
+		// Same Col-Down
+		for (int y = rowFrom + 1; y < clone.length; y++) {
+			if (clone[y][colFrom] == '#') {
+				markBlockedByAPoint(rowFrom, colFrom, clone, y, colFrom);
+			}
+		}
+
+		// Down
+		for (int y = rowFrom + 1; y < clone.length; y++)
+			for (int x = 0; x < clone[0].length; x++) {
+				if (clone[y][x] == '#') {
+					markBlockedByAPoint(rowFrom, colFrom, clone, y, x);
+				}
+			}
+
 		// Up
 		for (int y = rowFrom - 1; y >= 0; y--)
-			for (int x = colFrom + 1; x < clone.length; x++) {
+			for (int x = 0; x < clone[0].length; x++) {
 				if (clone[y][x] == '#') {
-					cleanAllStuffDueAPoint(rowFrom, colFrom, clone, y, x);
+					markBlockedByAPoint(rowFrom, colFrom, clone, y, x);
 				}
 			}
 
 		return clone;
 	}
 
-	private static void cleanAllStuffDueAPoint(int rowFrom, int colFrom, char[][] clone, int rowTo, int colTo) {
+	private static void markBlockedByAPoint(int rowFrom, int colFrom, char[][] clone, int rowTo, int colTo) {
 
-		boolean goToLeft = colFrom - colTo >= 0;
-		boolean goToUp = rowFrom - rowTo >= 0;
+		boolean onSameCol = colFrom - colTo == 0;
+		boolean onSameRow = rowFrom - rowTo == 0;
+		boolean goToLeft = colFrom - colTo > 0;
+		boolean goToUp = rowFrom - rowTo > 0;
+		int Y = (onSameRow) ? rowTo : (goToUp) ? (rowTo - 1) : (rowTo + 1);
 
-		// goto Left
-		if (goToLeft) {
-			for (int x = colFrom - 1; x >= 0; x--) {
-				if (isBlockedBy(rowFrom, x, clone, rowFrom, colFrom, rowTo, colTo))
-					clone[rowFrom][x] = 'X';
+		System.out.println("Asteroid Belt clean for (1,3) Start Node (y=" + rowTo + ",x=" + colTo + "), GoUp=" + goToUp
+				+ " GoLeft=" + goToLeft);
+
+		while ((0 <= Y) && (Y < clone.length)) {
+			int X = (onSameCol) ? colTo : (goToLeft) ? colTo - 1 : colTo + 1;
+
+			while ((0 <= X) && (X < clone[0].length)) {
+				if (isBlockedBy(Y, X, clone, rowFrom, colFrom, rowTo, colTo))
+					clone[Y][X] = 'X';
+
+				if (onSameCol)
+					X = -1;
+				else if (goToLeft)
+					X--;
+				else
+					X++;
 			}
-		} else {
-			// goto Right
-			for (int x = colFrom + 1; x < clone.length; x++) {
-				if (isBlockedBy(rowFrom, x, clone, rowFrom, colFrom, rowTo, colTo))
-					clone[rowFrom][x] = 'X';
-			}
 
+			if (onSameRow)
+				Y = -1;
+			else if (goToUp)
+				Y--;
+			else
+				Y++;
 		}
+
+		System.out
+				.println("Asteroid Belt clean for (1,3) Start Node (y=" + rowTo + ",x=" + colTo + ")\n" + print(clone));
 	}
 
 	private static boolean isBlockedBy(int r, int c, char[][] clone, int rowFrom, int colFrom, int rowTo, int colTo) {
+		if (rowFrom == rowTo && colFrom == colTo)
+			return false;
+		if (r == rowTo && c == colTo)
+			return false;
+
 		if (colFrom == colTo)
 			return c == colFrom;
 		if (rowFrom == rowTo)
 			return r == rowFrom;
-		if (rowFrom == rowTo && colFrom == colTo)
-			return false;
 
 		return (c - colFrom) / (colFrom - colTo) == (r - rowFrom) / (rowFrom - rowTo);
 	}
