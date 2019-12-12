@@ -1,3 +1,5 @@
+package day10;
+
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
@@ -48,7 +50,83 @@ public class TestMainDay10 {
 		}
 
 		System.out.println("Best (" + maxY + "," + maxX + "), numVisibleAst=" + maxVisible);
+		char[][] clearOnePoint = clearAllStuffNotVisibleFrom(maxY, maxX, clone(asteroidsBelt));
+		System.out.println("Asteroid Belt clean for (" + maxY + "," + maxX + ") = \n" + print(clearOnePoint));
 
+		guess200th(clearOnePoint, maxY, maxX);
+	}
+
+	private static void guess200th(char[][] clearOnePoint, int maxY, int maxX) {
+		double angleDegrees = 0;
+		double angle = angleDegrees * Math.PI / 180;
+
+		Double endX = maxX + 1000 * Math.sin(angle);
+		Double endY = maxY + 1000 * Math.cos(angle);
+
+		int numHit = 1;
+		boolean isHit = deleteFirst(maxY, maxX, clearOnePoint, endY.intValue(), endX.intValue());
+		System.out.println("Is Hit=" + isHit + "\n" + print(clearOnePoint));
+
+	}
+
+	private static boolean deleteFirst(int rowFrom, int colFrom, char[][] clone, int rowTo, int colTo) {
+		int a = rowTo - rowFrom;
+		int b = colFrom - colTo;
+		int c = a * colFrom + b * rowFrom;
+
+		boolean goToLeft = colFrom - colTo > 0;
+		boolean goToUp = rowFrom - rowTo > 0;
+
+		if (a == 0) {
+			int X = (goToLeft) ? colFrom - 1 : colFrom + 1;
+			while ((0 <= X) && (X < clone[0].length)) {
+				if (clone[rowFrom][X] == 'T') {
+					clone[rowFrom][X] = 'H';
+					return true;
+				}
+
+				if (goToLeft)
+					X--;
+				else
+					X++;
+			}
+		} else if (b == 0) {
+			int Y = (goToUp) ? rowFrom - 1 : rowFrom + 1;
+			while ((0 <= Y) && (Y < clone.length)) {
+				if (clone[Y][colFrom] == 'T') {
+					clone[Y][colFrom] = 'H';
+					return true;
+				}
+
+				if (goToUp)
+					Y--;
+				else
+					Y++;
+			}
+		} else {
+			// Diagonal case
+
+			int X = (goToLeft) ? colFrom - 1 : colFrom + 1;
+			while ((0 <= X) && (X < clone[0].length)) {
+				int temp = (a * X - c);
+				if (temp % b == 0) {
+					int Y = (a * X - c) / ((-1) * b);
+					if ((0 <= Y) && (Y < clone.length))
+						if (clone[Y][X] == 'T') {
+							clone[Y][X] = 'H';
+							return true;
+						}
+				} else {
+					/* No hit */}
+
+				if (goToLeft)
+					X--;
+				else
+					X++;
+			}
+		}
+
+		return false;
 	}
 
 	private static char[][] clone(char[][] asteroidsBelt) {
@@ -133,9 +211,6 @@ public class TestMainDay10 {
 		boolean goToLeft = colFrom - colTo > 0;
 		boolean goToUp = rowFrom - rowTo > 0;
 
-//		System.out.println("Asteroid Belt clean for (1,3) Start Node (y=" + rowTo + ",x=" + colTo + "), GoUp=" + goToUp
-//				+ " GoLeft=" + goToLeft);
-
 		if (a == 0) {
 			int X = (goToLeft) ? colTo - 1 : colTo + 1;
 			while ((0 <= X) && (X < clone[0].length)) {
@@ -173,8 +248,6 @@ public class TestMainDay10 {
 					X++;
 			}
 		}
-
-//		System.out.println(print(clone));
 	}
 
 	private static void markBlockedByAPoint(int rowFrom, int colFrom, char[][] clone, int rowTo, int colTo) {
