@@ -1,22 +1,19 @@
 package day12;
 
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 public class TestMainDay12 {
 
 	public static void main(String[] args) {
-		Moon i = new Moon(-8, -18, 6);
-		Moon e = new Moon(-11, -14, 4);
-		Moon g = new Moon(8, -3, -10);
-		Moon c = new Moon(-2, -16, 1);
+		Moon i = new Moon(-8, -18, 6, "Io");
+		Moon e = new Moon(-11, -14, 4, "Europa");
+		Moon g = new Moon(8, -3, -10, "Ganimede");
+		Moon c = new Moon(-2, -16, 1, "Calliope");
 
-//		Moon i = new Moon(-1, 0, 2);
-//		Moon e = new Moon(2, -10, -7);
-//		Moon g = new Moon(4, -8, 8);
-//		Moon c = new Moon(3, 5, -1);
+		// Moon i = new Moon(-1, 0, 2);
+		// Moon e = new Moon(2, -10, -7);
+		// Moon g = new Moon(4, -8, 8);
+		// Moon c = new Moon(3, 5, -1);
 
 		Moon[] allMoon = new Moon[4];
 		allMoon[0] = i;
@@ -27,12 +24,21 @@ public class TestMainDay12 {
 		double iter = 1;
 		applyGravityAndVelocity(allMoon);
 
-		while (!(i.isTheOriginal() && c.isTheOriginal() && e.isTheOriginal() && g.isTheOriginal())) {
-			if (iter % 100000000 == 0)
+		while (!(i.isTheOriginal(iter) && c.isTheOriginal(iter) && e.isTheOriginal(iter) && g.isTheOriginal(iter))) {
+			if (iter % 300000000 == 0)
 				System.out.println(new Date().toString() + " Iter=" + iter + "\n" + printMoons(allMoon));
 
+			if (i.isTheOriginalOnX() && e.isTheOriginalOnX() && g.isTheOriginalOnX() && c.isTheOriginalOnX())
+				System.out.println("All original on X at " + iter);
+			if (i.isTheOriginalOnY() && e.isTheOriginalOnY() && g.isTheOriginalOnY() && c.isTheOriginalOnY())
+				System.out.println("All original on Y at " + iter);
+			if (i.isTheOriginalOnZ() && e.isTheOriginalOnZ() && g.isTheOriginalOnZ() && c.isTheOriginalOnZ())
+				System.out.println("All original on Z at " + iter);
+
 			applyGravityAndVelocity(allMoon);
+
 			iter++;
+
 		}
 
 		System.out.println("END! Iter=" + iter + "\n" + printMoons(allMoon));

@@ -1,6 +1,7 @@
 package day12;
 
 public class Moon {
+	private static final int TIMES = 20;
 	int posX;
 	int posY;
 	int posZ;
@@ -12,8 +13,12 @@ public class Moon {
 	int initZ;
 	int initY;
 	int initX;
+	private String name;
+	private int bX = 0;
+	private int bY = 0;
+	private int bZ = 0;
 
-	public Moon(int x, int y, int z) {
+	public Moon(int x, int y, int z, String name) {
 		posX = x;
 		posY = y;
 		posZ = z;
@@ -21,6 +26,7 @@ public class Moon {
 		initX = x;
 		initY = y;
 		initZ = z;
+		this.name = name;
 
 		velX = 0;
 		velY = 0;
@@ -68,7 +74,19 @@ public class Moon {
 				+ "> En=" + getEnergy();
 	}
 
-	public boolean isTheOriginal() {
+	public boolean isTheOriginalOnX() {
+		return velX == 0 && posX == initX;
+	}
+
+	public boolean isTheOriginalOnY() {
+		return velY == 0 && posY == initY;
+	}
+
+	public boolean isTheOriginalOnZ() {
+		return velZ == 0 && posZ == initZ;
+	}
+
+	public boolean isTheOriginal(double numIter) {
 		return (velX == 0 && velY == 0 && velZ == 0 && posX == initX && posY == initY && posZ == initZ);
 	}
 }
