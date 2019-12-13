@@ -14,8 +14,10 @@ public class ResumeInputProvider implements InputProvider {
 	private int wait;
 	private int d;
 	private int a;
+	private boolean autoplay;
 
-	public ResumeInputProvider(List<String> inputHistory) {
+	public ResumeInputProvider(List<String> inputHistory, boolean autoplay) {
+		this.autoplay = autoplay;
 		resumeInputs = inputHistory.toArray(new String[0]);
 		historySize = inputHistory.size();
 		joystick = new BufferedReader(new InputStreamReader(System.in));
@@ -54,6 +56,28 @@ public class ResumeInputProvider implements InputProvider {
 			return moveJoystick(ret);
 		}
 
+		String input = (autoplay) ? autoPlayMove() : manualPlay();
+
+		try {
+			Thread.sleep(50);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return moveJoystick(input);
+	}
+
+	private String autoPlayMove() {
+
+		if (TestMainDay13.cursorX > TestMainDay13.ballX)
+			return "a";
+		else if (TestMainDay13.cursorX < TestMainDay13.ballX)
+			return "d";
+		else
+			return "";
+	}
+
+	private String manualPlay() throws IOException {
 		String input = joystick.readLine();
 		TestMainDay13.inputHistory.add(input);
 		if (input.equals("w")) {
@@ -66,8 +90,7 @@ public class ResumeInputProvider implements InputProvider {
 			a = 10;
 			input = "a";
 		}
-
-		return moveJoystick(input);
+		return input;
 	}
 
 	private String moveJoystick(String input) {
