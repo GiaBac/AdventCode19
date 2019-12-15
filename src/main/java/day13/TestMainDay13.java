@@ -39,7 +39,7 @@ public class TestMainDay13 {
 				inputHistory.remove(inputHistory.size() - 1);
 
 			CompleteIntCodeMachine_Day13 pc = new CompleteIntCodeMachine_Day13(array,
-					new ResumeInputProvider(inputHistory, true));
+					new ResumeInputProvider(inputHistory, false));
 			try {
 				while (1 == 1) {
 					Result11 resX = pc.runIntCodeProgram();
