@@ -38,13 +38,13 @@ public class DroidInputProvider implements InputProvider {
 
 		String input = (autoplay) ? autoPlayMove() : manualPlay();
 		if (autoplay)
-			waitTime(10);
+			waitTime(5);
 		String adjInput = adjustInput(input);
 		lastInput = Integer.parseInt(adjInput);
 		return adjInput;
 	}
 
-	public void waitTime(int millisec) {
+	public static void waitTime(int millisec) {
 		try {
 			Thread.sleep(millisec);
 		} catch (InterruptedException e) {

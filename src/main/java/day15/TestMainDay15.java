@@ -1,11 +1,14 @@
 package day15;
 
 import java.io.IOException;
+import java.sql.Time;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 public class TestMainDay15 {
 
+	private static final String OX_SYMB = "O";
 	static final Map<Integer, Map<Integer, String>> grid = new HashMap<>();
 	static Integer maxRow = 0;
 	static Integer maxCol = 0;
@@ -60,7 +63,61 @@ public class TestMainDay15 {
 	private static void calculateOxygenSpreadTime() {
 		printGrid();
 		System.out.println("Oxygen position: <X=" + oxygenX + " Y=" + oxygenY + ">");
+		Map<Integer, Map<Integer, Integer>> nextSpreadOxigen = new HashMap<>();
+		int totalTime = 0;
 
+		while (!oxygenSpreadAll()) {
+			int idxRow = minRow;
+			while (idxRow <= maxRow) {
+				int idxCol = minCol;
+				while (idxCol <= maxCol) {
+					Map<Integer, String> row = grid.get(idxRow);
+					String cell = row.get(idxCol);
+					if (cell != null && cell.equals(OX_SYMB))
+						calcSpreadOxygen(idxRow, idxCol, nextSpreadOxigen);
+
+					idxCol++;
+				}
+				idxRow++;
+			}
+
+			for (Entry<Integer, Map<Integer, Integer>> yxValue : nextSpreadOxigen.entrySet()) {
+				for (Integer x : yxValue.getValue().keySet()) {
+					grid.get(yxValue.getKey()).put(x, OX_SYMB);
+				}
+			}
+
+			totalTime++;
+			System.out.println("Total Time to spread#" + totalTime);
+			printGrid();
+			DroidInputProvider.waitTime(10);
+		}
+	}
+
+	private static boolean oxygenSpreadAll() {
+		for (Map<Integer, String> rows : grid.values()) {
+			for (String cell : rows.values()) {
+				if (cell != null && cell.equals("."))
+					return false;
+			}
+		}
+
+		return true;
+	}
+
+	private static void calcSpreadOxygen(int idxRow, int idxCol, Map<Integer, Map<Integer, Integer>> nextSpreadOxigen) {
+		trySpread(idxRow, idxCol + 1, nextSpreadOxigen);
+		trySpread(idxRow, idxCol - 1, nextSpreadOxigen);
+		trySpread(idxRow + 1, idxCol, nextSpreadOxigen);
+		trySpread(idxRow - 1, idxCol, nextSpreadOxigen);
+	}
+
+	private static void trySpread(int y, int x, Map<Integer, Map<Integer, Integer>> nextSpreadOxigen) {
+		Map<Integer, String> row = grid.get(y);
+
+		String c = (row != null) ? row.get(x) : null;
+		if (c != null && (c.equals(".") || c.equals("D")))
+			nextSpreadOxigen.computeIfAbsent(y, k -> new HashMap<>()).put(x, 1);
 	}
 
 	private static void moveDroid(Integer newStatus, DroidInputProvider inputProvider) {
@@ -79,12 +136,12 @@ public class TestMainDay15 {
 			grid.computeIfAbsent(newY, f -> new HashMap<>()).put(newX, "#");
 		else if (newStatus == 1) {
 			grid.computeIfAbsent(newY, f -> new HashMap<>()).put(newX, "D");
-			if (!grid.get(droidY).get(droidX).equals("O"))
+			if (!grid.get(droidY).get(droidX).equals(OX_SYMB))
 				grid.computeIfAbsent(droidY, f -> new HashMap<>()).put(droidX, ".");
 			droidX = newX;
 			droidY = newY;
 		} else if (newStatus == 2) {
-			grid.computeIfAbsent(newY, f -> new HashMap<>()).put(newX, "O");
+			grid.computeIfAbsent(newY, f -> new HashMap<>()).put(newX, OX_SYMB);
 			droidX = newX;
 			droidY = newY;
 		}
