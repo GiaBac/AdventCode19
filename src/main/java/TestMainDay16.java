@@ -6,7 +6,7 @@ public class TestMainDay16 {
 	public static void main(String[] args) {
 		String fullInput = "59718730609456731351293131043954182702121108074562978243742884161871544398977055503320958653307507508966449714414337735187580549358362555889812919496045724040642138706110661041990885362374435198119936583163910712480088609327792784217885605021161016819501165393890652993818130542242768441596060007838133531024988331598293657823801146846652173678159937295632636340994166521987674402071483406418370292035144241585262551324299766286455164775266890428904814988362921594953203336562273760946178800473700853809323954113201123479775212494228741821718730597221148998454224256326346654873824296052279974200167736410629219931381311353792034748731880630444730593";
 		String simpleInput = "03036732577212944063491565474664";
-		List<Integer> input = createInput(simpleInput, true);
+		List<Integer> input = createInput(fullInput, true);
 
 		StringBuilder sb = new StringBuilder();
 		sb.append(input.get(0));
@@ -24,15 +24,16 @@ public class TestMainDay16 {
 		basicPatter.add(0);
 		basicPatter.add(-1);
 
-		List<Integer> nextInput = removeOffset(input, offset);
+		int[] nextInput = removeOffset(input, offset);
 		System.out.println("Input Complete, size=" + input.size() + " Offset=" + offset + " Remove offset Input size:"
-				+ nextInput.size());
+				+ nextInput.length);
 
 		int totPhases = 100;
 		for (int idxPhase = 0; idxPhase < totPhases; idxPhase++) {
 			nextInput = doFFTPhase(nextInput, basicPatter);
 
-			System.out.println("Phase:" + (idxPhase + 1) + " res=" + nextInput);
+			System.out.println("Phase:" + (idxPhase + 1) + " res=" + nextInput[0] + nextInput[1] + nextInput[2]
+					+ nextInput[3] + nextInput[4] + nextInput[5] + nextInput[6] + nextInput[7]);
 		}
 
 		System.out.println("Apply offset");
@@ -47,53 +48,53 @@ public class TestMainDay16 {
 
 	}
 
-	private static List<Integer> removeOffset(List<Integer> input, int offset) {
-		List<Integer> res = new ArrayList<>();
-
-		for (int idx = offset; idx < input.size(); idx++)
-			res.add(input.get(idx));
+	private static int[] removeOffset(List<Integer> input, int offset) {
+		int[] res = new int[input.size() - offset];
+		for (int idx = offset, i = 0; idx < input.size(); idx++, i++)
+			res[i] = input.get(idx);
 
 		return res;
 	}
 
-	private static List<Integer> doFFTPhase(List<Integer> input, List<Integer> basicPatter) {
-		List<Integer> nextInput = new ArrayList<>();
-		int idx = 0;
-		while (idx < input.size()) {
-			Integer res = doFFTElement(idx, input, basicPatter);
-			nextInput.add(res);
-			idx++;
+	private static int[] doFFTPhase(int[] input, List<Integer> basicPatter) {
+		int[] nextInput = input.clone();
+		int idx = input.length - 2;
+
+		while (idx >= 0) {
+			nextInput[idx] = nextInput[idx] + nextInput[idx + 1];
+			nextInput[idx] = Math.abs(nextInput[idx]) % 10;
+
+			idx--;
 		}
+
+//		while (idx < input.size()) {
+//			Integer res = doFFTElement(idx, input, basicPatter);
+//			nextInput.add(res);
+//			idx++;
+//		}
 		return nextInput;
 	}
 
 	private static Integer doFFTElement(int inputElIdx, List<Integer> input, List<Integer> basicPatter) {
-		List<Integer> res = new ArrayList<>();
-		// List<Integer> pattern = calculatePattern(basicPatter, inputElIdx);
-		int patternSize = basicPatter.size() * (inputElIdx + 1);
-		System.out.println("inputElIdx: " + inputElIdx + " NewPatternSize=" + patternSize);
-
-		int inputIdx = 0;
-		boolean skip = true;
-		while (inputIdx < input.size()) {
-			int patternIdx = 0;
-			while (patternIdx < patternSize && inputIdx < input.size()) {
-				if (skip) {
-					skip = false;
-					patternIdx++;
-				} else {
-					// res.add(input.get(inputIdx) * pattern.get(patternIdx));
-					System.out.println(input.get(inputIdx) + " X" + calculatePatternEl(patternIdx, inputElIdx));
-					res.add(input.get(inputIdx) * calculatePatternEl(patternIdx, inputElIdx));
-					patternIdx++;
-					inputIdx++;
-				}
-			}
-		}
-
+		int step = inputElIdx + 1;
+		int inputIdx = inputElIdx;
 		int total = 0;
-		for (Integer el : res) {
-			total += el;
+
+		while (inputIdx < input.size()) {
+			int count = 0;
+			while (count < step && inputIdx < input.size()) {
+				total += input.get(inputIdx);
+				count++;
+				inputIdx++;
+			}
+			inputIdx += step;
+			count = 0;
+			while (count < step && inputIdx < input.size()) {
+				total -= input.get(inputIdx);
+				count++;
+				inputIdx++;
+			}
+			inputIdx += step;
 		}
 
 		return Math.abs(total) % 10;
@@ -112,23 +113,9 @@ public class TestMainDay16 {
 		} else
 			mul = (patternIdx / elIdx);
 
-		int bucket = mul % 4;
+		int bucket = mul % 3;
 
-		return (bucket == 0) ? 0 : (bucket == 1) ? 1 : (bucket == 2) ? 0 : -1;
-	}
-
-	private static List<Integer> calculatePattern(List<Integer> basicPatter, int phaseIdx) {
-
-		List<Integer> newPattern = new ArrayList<>();
-		for (Integer p : basicPatter) {
-			int repeatCount = phaseIdx + 1;
-			while (repeatCount > 0) {
-				newPattern.add(p);
-				repeatCount--;
-			}
-		}
-
-		return newPattern;
+		return (bucket == 0) ? 1 : (bucket == 1) ? 0 : -1;
 	}
 
 	private static List<Integer> createInput(String simpleInput, boolean part2) {
